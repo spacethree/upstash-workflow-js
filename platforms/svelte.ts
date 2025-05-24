@@ -29,12 +29,13 @@ export const serve = <TInitialPayload = unknown, TResult = unknown>(
 ): {
   POST: RequestHandler;
 } => {
-  const handler: RequestHandler = async ({ request }) => {
+  const handler: RequestHandler = async ({ request, locals, fetch }) => {
+    const svelteRequest = Object.assign(request, { locals, fetch });
     const { handler: serveHandler } = serveBase<TInitialPayload>(routeFunction, telemetry, {
       ...options,
       useJSONContent: true,
     });
-    return await serveHandler(request);
+    return await serveHandler(svelteRequest);
   };
   return { POST: handler };
 };
